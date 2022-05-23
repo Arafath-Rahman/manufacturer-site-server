@@ -21,9 +21,17 @@ async function run() {
     await client.connect();
 
     const partCollection = client.db('robotics_parts').collection('parts');
+    const reviewCollection = client.db('robotics_parts').collection('reviews');
 
+    //get all parts
     app.get('/parts', async (req, res) => {
       const result = await partCollection.find({}).toArray();
+      res.send(result);
+    })
+
+    //get all reviews
+    app.get('/reviews', async (req, res) => {
+      const result = await reviewCollection.find({}).toArray();
       res.send(result);
     })
 
