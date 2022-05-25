@@ -97,18 +97,18 @@ async function run() {
       return res.send({ success: true, result });
     });
 
-    // //get orders of a specific user
-    // app.get("/order", verifyJWT, async (req, res) => {
-    //   const userEmail = req.query.userEmail;
-    //   const decodedEmail = req.decoded.email;
-    //   if (userEmail === decodedEmail) {
-    //     const query = { userEmail: userEmail };
-    //     const orders = await orderCollection.find(query).toArray();
-    //     res.send(orders);
-    //   } else {
-    //     return res.status(403).send({ message: "forbidden access" });
-    //   }
-    // });
+    //get orders of a specific user
+    app.get("/order", verifyJWT, async (req, res) => {
+      const userEmail = req.query.userEmail;
+      const decodedEmail = req.decoded.email;
+      if (userEmail === decodedEmail) {
+        const query = { userEmail: userEmail };
+        const orders = await orderCollection.find(query).toArray();
+        res.send(orders);
+      } else {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+    });
 
 
   }
