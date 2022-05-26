@@ -185,6 +185,13 @@ async function run() {
       res.send(result);
     })
 
+    //get a profile info by email
+    app.get("/profile/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const query = {email: email};
+      const profile = await profileCollection.findOne(query);
+      res.send(profile);
+    })
 
   }
   finally {
