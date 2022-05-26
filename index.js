@@ -5,6 +5,7 @@ const { MongoClient, ServerApiVersion, ObjectID, ObjectId } = require('mongodb')
 const app = express();
 require('dotenv').config()
 const port = process.env.PORT || 5000;
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // middleware
 app.use(cors());
@@ -117,6 +118,53 @@ async function run() {
       const result = await orderCollection.deleteOne(filter);
       res.send(result);
     });
+
+    //post create payment intent
+    app.post("/create-payment-intent", verifyJWT, async (req, res) => {
+      const { totalPrice } = req.body;
+      const amount = totalPrice*100;
+    
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+    
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
+    //store payment by ID
+    app.patch("/order/:orderId", verifyJWT, async (req, res) => {
+      const orderId = req.params.orderId;
+      const payment = req.body;
+      const filter = {_id: ObjectId(orderId)};
+      const updatedDoc = {
+        $set: {
+          paid: true,
+          transactionId: payment.transactionId,
+        },
+      };
+      const updatedResult = await orderCollection.updateOne(filter, updatedDoc);
+
+      //send payment mail
+      // const order = await orderCollection.findOne(filter); 
+      // await sendPaymentConfirmationEmail(booking);
+
+      res.send(updatedResult);
+    });
+
+    //get an order by ID
+    app.get("/order/:orderId", verifyJWT, async (req, res) => {
+      const orderId = req.params.orderId;
+      const query = {_id: ObjectId(orderId)};
+      const order = await orderCollection.findOne(query);
+      res.send(order);
+    })
 
 
   }
