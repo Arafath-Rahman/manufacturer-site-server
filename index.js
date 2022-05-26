@@ -132,7 +132,6 @@ async function run() {
         email: user.email
       }
       const profileCreated = await profileCollection.updateOne(filter, {$set: profile}, option);
-
       res.send({ result, token });
     });
 
@@ -163,6 +162,7 @@ async function run() {
       }
     });
 
+    
     //delete an order
     app.delete("/order/:orderId", verifyJWT, async (req, res) => {
       const id = req.params.orderId;
