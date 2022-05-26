@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const { MongoClient, ServerApiVersion, ObjectID } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectID, ObjectId } = require('mongodb');
 const app = express();
 require('dotenv').config()
 const port = process.env.PORT || 5000;
@@ -108,6 +108,14 @@ async function run() {
       } else {
         return res.status(403).send({ message: "forbidden access" });
       }
+    });
+
+    //delete an order
+    app.delete("/order/:orderId", verifyJWT, async (req, res) => {
+      const id = req.params.orderId;
+      const filter = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(filter);
+      res.send(result);
     });
 
 
