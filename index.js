@@ -43,6 +43,19 @@ async function run() {
     const orderCollection = client.db('robotics_parts').collection('orders');
     const profileCollection = client.db('robotics_parts').collection('profiles');
 
+    //verify Admin
+    const verifyAdmin = async (req, res, next) => {
+      const requester = req.decoded.email;
+      const requesterAccount = await userCollection.findOne({
+        email: requester,
+      });
+      if (requesterAccount.role === "admin") {
+        next();
+      } else {
+        res.status(403).send({ message: "forbidden access" });
+      }
+    };
+
     //get all parts
     app.get('/parts', async (req, res) => {
       const result = await partCollection.find({}).toArray();
@@ -153,7 +166,7 @@ async function run() {
       const filter = {_id: ObjectId(orderId)};
       const updatedDoc = {
         $set: {
-          paid: true,
+          paid: payment.paid,
           transactionId: payment.transactionId,
         },
       };
