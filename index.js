@@ -150,11 +150,6 @@ async function run() {
         },
       };
       const updatedResult = await orderCollection.updateOne(filter, updatedDoc);
-
-      //send payment mail
-      // const order = await orderCollection.findOne(filter); 
-      // await sendPaymentConfirmationEmail(booking);
-
       res.send(updatedResult);
     });
 
@@ -165,6 +160,13 @@ async function run() {
       const order = await orderCollection.findOne(query);
       res.send(order);
     })
+
+    //add a review
+    app.post("/review", verifyJWT, async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      return res.send({ success: true, result });
+    });
 
 
   }
