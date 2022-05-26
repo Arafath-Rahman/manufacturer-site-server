@@ -56,6 +56,25 @@ async function run() {
       }
     };
 
+    //getting an user's admin status
+    app.get("/admin/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      const isAdmin = user.role === "admin";
+      res.send({ admin: isAdmin });
+    });
+
+    //put route for admin:  make admin
+    app.put("/user/admin/:email", verifyJWT, verifyAdmin, async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $set: { role: "admin" },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     //get all parts
     app.get('/parts', async (req, res) => {
       const result = await partCollection.find({}).toArray();
@@ -82,6 +101,12 @@ async function run() {
       const query = { email: email };
       const result = await userCollection.findOne(query);
       res.send(result);
+    })
+
+    //get all users
+    app.get('/user', verifyJWT, async (req, res) => {
+      const users = await userCollection.find().toArray();
+      res.send(users);
     })
 
 
@@ -205,7 +230,12 @@ async function run() {
       const profile = await profileCollection.findOne(query);
       res.send(profile);
     })
-
+    
+    //get all orders
+    // app.get("/order", verifyJWT, verifyAdmin, async (req, res) => {
+    //   const orders = await orderCollection.find().toArray();
+    //   res.send(orders);
+    // })
   }
   finally {
     // await client.close();
