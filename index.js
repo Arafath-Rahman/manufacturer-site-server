@@ -90,7 +90,7 @@ async function run() {
     })
 
     //get all reviews
-    app.get('/reviews', async (req, res) => {
+    app.get('/reviews', verifyJWT, async (req, res) => {
       const result = await reviewCollection.find({}).toArray();
       res.send(result);
     })
@@ -137,7 +137,7 @@ async function run() {
     });
 
     //add an order
-    app.post("/order", async (req, res) => {
+    app.post("/order", verifyJWT, async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
       // sendAppointmentEmail(booking);
@@ -216,9 +216,24 @@ async function run() {
       const result = await reviewCollection.insertOne(review);
       return res.send({ success: true, result });
     });
+    
+    //add a part
+    app.post("/part", verifyJWT, verifyAdmin, async (req, res) => {
+      const part = req.body;
+      const result = await partCollection.insertOne(part);
+      return res.send({ success: true, result });
+    });
+
+    //delete a part
+    app.delete("/part/:partId", async (req, res) => {
+      const id = req.params.partId;
+      const filter = { _id: ObjectId(id) };
+      const result = await partCollection.deleteOne(filter);
+      res.send(result);
+    });
 
     //update profile
-    app.put("/profile/:email", async (req, res) => {
+    app.put("/profile/:email", verifyJWT,  async (req, res) => {
       const email = req.params.email;
       const filter = { email: email };
       const updatedDoc = {$set : req.body};
