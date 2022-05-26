@@ -13,7 +13,6 @@ app.use(express.json());
 
 
 //DB configs
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.skpwg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -42,6 +41,7 @@ async function run() {
     const partCollection = client.db('robotics_parts').collection('parts');
     const reviewCollection = client.db('robotics_parts').collection('reviews');
     const orderCollection = client.db('robotics_parts').collection('orders');
+    const profileCollection = client.db('robotics_parts').collection('profiles');
 
     //get all parts
     app.get('/parts', async (req, res) => {
@@ -87,6 +87,14 @@ async function run() {
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "1h" }
       );
+
+      //add a profile
+      const profile = {
+        name: user.name,
+        email: user.email
+      }
+      const profileCreated = await profileCollection.updateOne(filter, {$set: profile}, option);
+
       res.send({ result, token });
     });
 
@@ -167,6 +175,15 @@ async function run() {
       const result = await reviewCollection.insertOne(review);
       return res.send({ success: true, result });
     });
+
+    //update profile
+    app.put("/profile/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updatedDoc = {$set : req.body};
+      const result = await profileCollection.updateOne(filter, updatedDoc, {upsert:true});
+      res.send(result);
+    })
 
 
   }
