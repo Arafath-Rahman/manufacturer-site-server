@@ -13,5 +13,20 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  }
+  },
+  "name": "manufacturer-website-server-side-arafath-rahman",
+  "description": "It's a robotics part manufacturer store app. Anyone can buy parts here in large quantity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/programming-hero-web-course1/manufacturer-website-server-side-Arafath-Rahman.git"
+  },
+  "author": "Md. Arafath Rahman Khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/programming-hero-web-course1/manufacturer-website-server-side-Arafath-Rahman/issues"
+  },
+  "homepage": "https://github.com/programming-hero-web-course1/manufacturer-website-server-side-Arafath-Rahman#readme"
 }
