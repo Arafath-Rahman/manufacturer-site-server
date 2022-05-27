@@ -1,4 +1,4 @@
-## Website Name: Robotics Parts Store
+## Website Name: Robotics Parts Manufacturer
 
 ### Description:
 

@@ -173,6 +173,7 @@ async function run() {
     //post create payment intent
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const { totalPrice } = req.body;
+      console.log(totalPrice);
       const amount = totalPrice*100;
     
       // Create a PaymentIntent with the order amount and currency
@@ -224,7 +225,7 @@ async function run() {
     });
 
     //delete a part
-    app.delete("/part/:partId", async (req, res) => {
+    app.delete("/part/:partId", verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.params.partId;
       const filter = { _id: ObjectId(id) };
       const result = await partCollection.deleteOne(filter);
