@@ -89,7 +89,7 @@ async function run() {
     })
 
     //get all reviews
-    app.get('/reviews', verifyJWT, async (req, res) => {
+    app.get('/reviews', async (req, res) => {
       const result = await reviewCollection.find({}).toArray();
       res.send(result);
     })
