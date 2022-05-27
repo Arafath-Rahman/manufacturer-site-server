@@ -32,7 +32,6 @@ function verifyJWT(req, res, next) {
   });
 }
 
-
 async function run() {
   try {
     await client.connect();
@@ -256,7 +255,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
 
 
 app.get('/', (req, res) => {
